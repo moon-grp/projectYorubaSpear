@@ -33,17 +33,26 @@ def signUp():
         if not password:
             return "aboii, you no enter password na", 400
 
-        hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+        if validators.email(email) != True:
+            return "aboii, enter vaild email na!!", 400
 
-        insert = mongo.db.yorubaspear.insert({
-            "email":email,
-            "password":hashed,
-            "date": datetime.datetime.utcnow()
-        })
+        hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt(12))
 
-        res = jsonify("aboii, you dn create the account!!")
+        checkEmail = mongo.db.yorubaspear.find_one({"email": email})
 
-        return res, 200
+        if checkEmail is None:
+            insert = mongo.db.yorubaspear.insert({
+                "email": email,
+                "password": hashed,
+                "date": datetime.datetime.utcnow()
+            })
+
+            res = jsonify("aboii, you dn create the account!!")
+
+            return res, 200
+        else:
+
+            return "aboii, you dn create account already na!!", 409
 
     except Exception as x:
         print(x)
