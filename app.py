@@ -21,8 +21,6 @@ except Exception as x:
 @app.route("/user", methods=["POST"])
 def signUp():
     try:
-       # name = {"name": "olumide", "age": "14"}
-       # dbRes = mongo.db.yorubaspear.insert_one(name)
 
         data = request.json
         email = data["email"]
@@ -53,6 +51,37 @@ def signUp():
         else:
 
             return "aboii, you dn create account already na!!", 409
+
+    except Exception as x:
+        print(x)
+
+
+@app.route('/user', methods=["GET"])
+def login():
+    try:
+
+        data = request.json
+        email = data["email"]
+        password = data["password"]
+
+        if not email:
+            return "aboii, you no enter email na", 400
+        if not password:
+            return "aboii, you no enter password na", 400
+
+        if validators.email(email) != True:
+            return "aboii, enter vaild email na!!", 400
+
+
+        getUser = mongo.db.yorubaspear.find_one({"email": email})
+        encPassword = getUser["password"]
+
+        if bcrypt.checkpw(password.encode("utf-8"), encPassword):
+            return "aboii, correct pass", 200
+        else:
+            return "aboii e no correct" , 400
+
+        #return encPassword
 
     except Exception as x:
         print(x)
