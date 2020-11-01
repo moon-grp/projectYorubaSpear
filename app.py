@@ -3,6 +3,7 @@ from flask_pymongo import PyMongo
 import json
 import bcrypt
 import datetime
+import validators
 
 
 app = Flask(__name__)
@@ -32,13 +33,17 @@ def signUp():
         if not password:
             return "aboii, you no enter password na", 400
 
-        hashed = bcrypt.hashpw(password, bcrypt.gensalt(14))
+        hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
         insert = mongo.db.yorubaspear.insert({
             "email":email,
             "password":hashed,
             "date": datetime.datetime.utcnow()
         })
+
+        res = jsonify("aboii, you dn create the account!!")
+
+        return res, 200
 
     except Exception as x:
         print(x)
