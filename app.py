@@ -6,9 +6,16 @@ import datetime
 import validators
 from bson import json_util
 from bson.json_util import dumps
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
 
 
 app = Flask(__name__)
+
+app.config['JWT_SECRET_KEY'] = 'cosmicthebaelessboy'  # Change this!
+jwt = JWTManager(app)
 
 try:
 
@@ -47,7 +54,12 @@ def signUp():
                 "date": datetime.datetime.utcnow()
             })
 
-            res = jsonify("aboii, you dn create the account!!")
+            access_token = create_access_token(identity={"email":email})
+
+            res = jsonify({
+                "message":"aboii, you dn create account!!!",
+                "token":access_token
+            })
 
             return res, 200
         else:
@@ -81,9 +93,9 @@ def login():
 
             if bcrypt.checkpw(password.encode("utf-8"), encPassword):
                 res = {
-                    "id":getUser["_id"],
-                    "email":getUser["email"],
-                    "date_created":getUser["date"]
+                    "id": getUser["_id"],
+                    "email": getUser["email"],
+                    "date_created": getUser["date"]
                 }
 
                 res2 = json.loads(json_util.dumps(res))
