@@ -4,6 +4,8 @@ import json
 import bcrypt
 import datetime
 import validators
+from bson import json_util
+from bson.json_util import dumps
 
 
 app = Flask(__name__)
@@ -72,16 +74,27 @@ def login():
         if validators.email(email) != True:
             return "aboii, enter vaild email na!!", 400
 
-
         getUser = mongo.db.yorubaspear.find_one({"email": email})
-        encPassword = getUser["password"]
 
-        if bcrypt.checkpw(password.encode("utf-8"), encPassword):
-            return "aboii, correct pass", 200
+        if getUser != None:
+            encPassword = getUser["password"]
+
+            if bcrypt.checkpw(password.encode("utf-8"), encPassword):
+                res = {
+                    "id":getUser["_id"],
+                    "email":getUser["email"],
+                    "date_created":getUser["date"]
+                }
+
+                res2 = json.loads(json_util.dumps(res))
+                return res2, 200
+            else:
+                return "aboii e no correct", 400
+
         else:
-            return "aboii e no correct" , 400
+            return "aboii, your password no correct ooo!!!", 400
 
-        #return encPassword
+        # return encPassword
 
     except Exception as x:
         print(x)
