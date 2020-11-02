@@ -54,11 +54,11 @@ def signUp():
                 "date": datetime.datetime.utcnow()
             })
 
-            access_token = create_access_token(identity={"email":email})
+            access_token = create_access_token(identity={"email": email})
 
             res = jsonify({
-                "message":"aboii, you dn create account!!!",
-                "token":access_token
+                "message": "aboii, you dn create account!!!",
+                "token": access_token
             })
 
             return res, 200
@@ -92,14 +92,16 @@ def login():
             encPassword = getUser["password"]
 
             if bcrypt.checkpw(password.encode("utf-8"), encPassword):
-                res = {
-                    "id": getUser["_id"],
-                    "email": getUser["email"],
-                    "date_created": getUser["date"]
-                }
 
-                res2 = json.loads(json_util.dumps(res))
-                return res2, 200
+                access_token = create_access_token(identity={"email": email})
+
+                res = jsonify({
+                    "message": "aboii, you dn login dy aii",
+                    "token": access_token
+                })
+
+                
+                return res, 200
             else:
                 return "aboii e no correct", 400
 
