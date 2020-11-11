@@ -27,11 +27,12 @@ except Exception as x:
     print(x)
 
 
-@app.route("/user", methods=["POST"])
+@app.route("/api/v1/signup", methods=["POST"])
 def signUp():
     try:
 
         data = request.json
+        name = data["name"]
         email = data["email"]
         password = data["password"]
 
@@ -39,6 +40,8 @@ def signUp():
             return "aboii, you no enter email na", 400
         if not password:
             return "aboii, you no enter password na", 400
+        if not name:
+            return "aboii, you no enter your name na", 400
 
         if validators.email(email) != True:
             return "aboii, enter vaild email na!!", 400
@@ -51,6 +54,7 @@ def signUp():
             insert = mongo.db.yorubaspear.insert({
                 "email": email,
                 "password": hashed,
+                "name": name,
                 "date": datetime.datetime.utcnow()
             })
 
@@ -100,7 +104,6 @@ def login():
                     "token": access_token
                 })
 
-                
                 return res, 200
             else:
                 return "aboii e no correct", 400
