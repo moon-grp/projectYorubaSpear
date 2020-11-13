@@ -21,6 +21,8 @@ try:
 
     app.config["MONGO_URI"] = "mongodb+srv://emohex:oluoluolu@cluster0.geiph.mongodb.net/yorubaspear?retryWrites=true&w=majority"
 
+    app.config["MONGO_URI"] = "mongodb+srv://emohex:oluoluolu@cluster0.geiph.mongodb.net/wishlist?retryWrites=true&w=majority"
+
     mongo = PyMongo(app)
 except Exception as x:
     print("cannot connect to db")
@@ -74,7 +76,7 @@ def signUp():
         print(x)
 
 
-@app.route('/user', methods=["GET"])
+@app.route('/api/v1/signin', methods=["POST"])
 def login():
     try:
 
@@ -106,12 +108,53 @@ def login():
 
                 return res, 200
             else:
-                return "aboii e no correct", 400
+                return "aboii, password no correct ooo!!!", 400
 
         else:
-            return "aboii, your password no correct ooo!!!", 400
+            return "aboii, your email no dy record", 400
 
         # return encPassword
+
+    except Exception as x:
+        print(x)
+
+
+@app.route('/api/v1/wishit', methods=["POST"])
+@jwt_required
+def wishIt():
+    try:
+
+        data = request.json
+
+        wish = data["wish"]
+
+        email = get_jwt_identity()
+
+        print(email["email"])
+
+        getEmail = email["email"]
+
+        # check if email is in the collection for details
+
+        checkEmail = mongo.db.yorubaspear.find_one({"email": getEmail})
+
+        if checkEmail != None:
+            insert = mongo.db.wishlist.insert({
+                "email": getEmail,
+                "wish": wish,
+                "date": datetime.datetime.utcnow()
+            })
+
+            res = jsonify({
+                "message": "aboii, you dn send your wish to the godsss!!!",
+
+            })
+
+            return res, 200
+        else:
+            return "aboii, email no dy record check am well!!!", 400
+
+        return "yo", 200
 
     except Exception as x:
         print(x)
