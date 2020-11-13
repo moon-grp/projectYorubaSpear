@@ -130,17 +130,17 @@ def wishIt():
 
         email = get_jwt_identity()
 
-        print(email["email"])
-
         getEmail = email["email"]
 
         # check if email is in the collection for details
 
         checkEmail = mongo.db.yorubaspear.find_one({"email": getEmail})
+           
 
         if checkEmail != None:
+            name = checkEmail["name"]
             insert = mongo.db.wishlist.insert({
-                "email": getEmail,
+                "name": name,
                 "wish": wish,
                 "date": datetime.datetime.utcnow()
             })
