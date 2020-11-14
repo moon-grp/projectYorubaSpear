@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_pymongo import PyMongo
-import json
+
 import bcrypt
 import datetime
 import validators
@@ -10,6 +10,7 @@ from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
+import json
 
 
 app = Flask(__name__)
@@ -135,7 +136,6 @@ def wishIt():
         # check if email is in the collection for details
 
         checkEmail = mongo.db.yorubaspear.find_one({"email": getEmail})
-           
 
         if checkEmail != None:
             name = checkEmail["name"]
@@ -145,16 +145,44 @@ def wishIt():
                 "date": datetime.datetime.utcnow()
             })
 
-            res = jsonify({
-                "message": "aboii, you dn send your wish to the godsss!!!",
+            #boy = list(mongo.db.wishlist.find({}))
 
-            })
+            # print(boy)
 
-            return res, 200
+            return list(mongo.db.wishlist.find({}))
         else:
             return "aboii, email no dy record check am well!!!", 400
 
-        return "yo", 200
+    except Exception as x:
+        print(x)
+
+
+@app.route('/api/v1/viewtree', methods=["GET"])
+@jwt_required
+def viewWishes():
+    try:
+        # check if email is in db then display the whole list
+        email = get_jwt_identity()
+
+        getEmail = email["email"]
+
+        checkEmail = mongo.db.yorubaspear.find_one({"email": getEmail})
+
+        if checkEmail != None:
+            getAllWishes = mongo.db.wishlist.find()
+
+            res = json_util.dumps(getAllWishes, indent=4)
+
+            return res
+
+        # print(getAllWishes)
+
+        else:
+            return "aboii, we no get this email for our database oo!!", 400
+
+        #boy = list(mongo.db.wishlist.find({}))
+
+        # print(boy)
 
     except Exception as x:
         print(x)
