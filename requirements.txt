@@ -1,1 +1,7 @@
-pymongo
+flask
+gunicorn
+flask_pymongo
+validators
+shortuuid
+datetime
+dnspython
