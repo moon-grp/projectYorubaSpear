@@ -5,3 +5,5 @@ validators
 shortuuid
 datetime
 dnspython
+bcrypt
+flask_jwt_extended
