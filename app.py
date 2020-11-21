@@ -149,7 +149,7 @@ def wishIt():
 
             # print(boy)
 
-            return "aboii, the gods dn receive your wishes"
+            return "aboii, the gods dn receive your wishes", 200
         else:
             return "aboii, email no dy record check am well!!!", 400
 
