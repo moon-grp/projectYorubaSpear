@@ -149,7 +149,7 @@ def wishIt():
 
             # print(boy)
 
-            return list(mongo.db.wishlist.find({}))
+            return "aboii, the gods dn receive your wishes"
         else:
             return "aboii, email no dy record check am well!!!", 400
 
